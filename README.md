@@ -2,4 +2,4 @@
 
 ## Seed for single page application
 
-### Added Grunt tasks
+#### Added Grunt tasks
