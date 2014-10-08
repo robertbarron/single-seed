@@ -18,11 +18,11 @@ module.exports = {
 */
     app_files: {
         js: [ 
-            'src/**/*.js', 
-            '!src/assets/**/*.js' 
+            'src/**/*.js',
+            '!src/assets/**/*.js'
         ],
         tpl: [ 
-            'src/app/templates/**/*.tpl.html' 
+            'src/app/templates/**/*.tpl' 
         ],
 
         html: [ 
@@ -36,9 +36,12 @@ module.exports = {
 */
     vendor_files: {
         js: [
-            'src/libs/jpload.js'
+            'vendor/jquery/dist/jquery.js',
+            'vendor/bootstrap/dist/js/bootstrap.js',
+            'vendor/modernizr/modernizr.js'
         ],
         css: [
+            'vendor/bootstrap/dist/css/bootstrap.css'
         ],
         assets: [
         ]

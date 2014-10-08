@@ -1,16 +1,37 @@
-@import "compass/reset";
-
-
-* {
-	margin: 0;
-	padding: 0;
-	border: 1px solid 1px;
-
-	#wara {
-		border: 0;
+// @import "compass/reset";
+#main {
+	margin: 0 auto;
+	.home {
+		padding-top: 120px;
+		padding-bottom: 120px;
+		margin: 0 auto;
+		text-align: center;
+		h1 {
+			margin-bottom: 30px;
+		}
+		.button-container {
+ 			.button-action {
+				width: 200px;
+				text-align: center;
+				cursor: pointer;
+			}
+		}
 	}
-
-	
+	.action {
+		padding-bottom: 120px;
+		padding-top: 120px;
+		text-align: center;
+	}
 }
 
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+}
 
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+}

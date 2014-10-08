@@ -94,6 +94,9 @@ JPLoad = {
             });
         } else {
             document.getElementById(elementID).innerHTML = htmlData;
+            if (callback) {
+                callback(true);
+            }
         }
     },
 };

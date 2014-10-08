@@ -70,6 +70,16 @@ module.exports = function ( grunt ) {
           }
        ]   
       },
+      build_vendor_css: {
+        files: [
+          { 
+            src: [ '<%= vendor_files.css %>' ],
+            dest: '<%= build_dir %>',
+            cwd: '.',
+            expand: true,
+          }
+       ]   
+      },
       build_appjs: {
         files: [
           {
@@ -80,6 +90,7 @@ module.exports = function ( grunt ) {
           }
         ]
       },
+
       build_vendorjs: {
         files: [
           {
@@ -99,6 +110,22 @@ module.exports = function ( grunt ) {
             expand: true
           }
         ]
+      },
+      build_tpl: {
+        files: [
+          {
+            src: [ '<%= app_files.tpl %>'],
+            dest: '<%= build_dir %>/',
+            cwd: '.',
+            expand: true
+          }
+        ]
+      },
+      compile_tpl: {
+        expand: true,
+        flatten: true,
+        src: ['<%= build_dir %>/src/app/templates/**/*.tpl'],
+        dest: '<%= compile_dir %>/assets/templates/'
       }
     },
 
@@ -147,7 +174,12 @@ module.exports = function ( grunt ) {
           sassDir: 'src/sass',
           cssDir: '<%= build_dir %>/assets/',
           outputStyle: 'compressed',
-          environment : 'development'
+          environment : 'development',
+          imagesDir: '<%= build_dir %>/assets/images/',
+          imagesPath: '<%= build_dir %>/assets/images/sprites',
+          generatedImagesDir:    '<%= build_dir %>/assets/images/sprites',
+          generatedImagesPath:   '<%= build_dir %>/assets/images/sprites',
+          httpGeneratedImagesPath: '<%= build_dir %>/assets/images/'
         }
       },
       compile: {
@@ -220,7 +252,7 @@ module.exports = function ( grunt ) {
         dir: '<%= build_dir %>',
         src: [
           '<%= vendor_files.js %>',
-          '<%= build_dir %>/src/assets/**/*.js',
+          '<%= build_dir %>/src/**/*.js',
           '<%= vendor_files.css %>',
           '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
         ]
@@ -308,9 +340,8 @@ module.exports = function ( grunt ) {
        * When our templates change, we only rewrite the template cache.
        */
       tpls: {
-        files: [ 
-          '<%= app_files.tpl %>', 
-        ]
+        files: [ '<%= app_files.tpl %>'],
+        tasks: ['copy:build_tpl']
       },
 
       /**
@@ -345,8 +376,8 @@ module.exports = function ( grunt ) {
    * The `build` task gets your app ready to run for development and testing.
    */
   grunt.registerTask( 'build', [
-    'clean:build', 'jshint', 'concat:build_css', 'compass:build', 'rename:build', 'copy:build_app_assets', 'copy:build_vendor_assets',
-    'copy:build_appjs', 'copy:build_vendorjs', 'index:build'
+    'clean:build', 'jshint', 'concat:build_css', 'compass:build', 'rename:build', 'copy:build_app_assets', 'copy:build_vendor_css','copy:build_vendor_assets',
+    'copy:build_appjs', 'copy:build_vendorjs', 'copy:build_tpl', 'index:build' 
   ]);
   //REMOVED karma:continuous from this build
 
@@ -355,7 +386,7 @@ module.exports = function ( grunt ) {
    * minifying your code.
    */
   grunt.registerTask( 'compile', [
-    'clean:compile','compass:compile', 'rename:compile', 'copy:compile_assets', 'concat:compile_js', 'uglify', 'index:compile'
+    'clean:compile','compass:compile', 'rename:compile', 'copy:compile_assets', 'copy:compile_tpl', 'concat:compile_js', 'uglify', 'index:compile'
   ]);
 
   /**
@@ -384,12 +415,18 @@ module.exports = function ( grunt ) {
    */
   grunt.registerMultiTask( 'index', 'Process index.html template', function () {
     var dirRE = new RegExp( '^('+grunt.config('build_dir')+'|'+grunt.config('compile_dir')+')\/', 'g' );
+
     var jsFiles = filterForJS( this.filesSrc ).map( function ( file ) {
       return file.replace( dirRE, '' );
     });
+
     var cssFiles = filterForCSS( this.filesSrc ).map( function ( file ) {
       return file.replace( dirRE, '' );
     });
+
+    grunt.log.writeln(jsFiles);
+    grunt.log.writeln(cssFiles);
+
     grunt.file.copy('src/index.html', this.data.dir + '/index.html', { 
       process: function ( contents, path ) {
         return grunt.template.process( contents, {
